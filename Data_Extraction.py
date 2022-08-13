@@ -7,7 +7,8 @@ import calendar
 class record:
 
     def extract_record(self):
-        url = 'https://www.saudiexchange.sa/Resources/Reports/DetailedDaily_en.html'
+        # Need DataFrame Link
+        url = 'DataFrame Link'
         dfs = pd.read_html(url, encoding="utf-8")
         self.df = dfs[-1]
         f = dfs[0]
@@ -15,7 +16,7 @@ class record:
         date = f[0]
         self.date  = date.replace("Market Date ", "")        
         return self.df, self.date
-
+    # Extract Date from Data Frame
     def date_time(self):
         date = self.extract_record()
         today = self.date
@@ -25,7 +26,7 @@ class record:
         today = today.replace('/', '_')
         self.name = 'Companies_List_' + today + '.csv'
         return self.name, self.day
-
+    # Convert  DF to CSV file
     def html_to_csv(self):
         data_frame = self.extract_record()
         df = self.df
@@ -34,8 +35,9 @@ class record:
         name = self.name
         self.completeName = (path + '\\' + name)
         df.to_csv(self.completeName, index=None, header=False)
-
-
+    
+    
+    # Append Each row in seprate CSV file
     def companies_list(self):
         data = self.html_to_csv()
         d = self.date_time()
@@ -73,7 +75,8 @@ class record:
         print(today_day)
         print(today_date)
         print("Files updated successfully ")
-
+    
+    # Upload CSV file on Google Drive
     def upload_drive(self):
         from pydrive.auth import GoogleAuth
         from pydrive.drive import GoogleDrive
@@ -83,23 +86,9 @@ class record:
         filename = self.completeName
         upload_file_list = [filename]
         for upload_file in upload_file_list:
-            gfile = drive.CreateFile({'parents': [{'id': '1PNWZv-ptY1_iFWC-vbLI-E83B2oUw7o5'}]})
+            # Need google drive Api
+            gfile = drive.CreateFile("Drive Folder Link")
             # Read file and set it as the content of this instance.
             gfile.SetContentFile(upload_file)
             gfile.Upload()  # Upload the file.
             print("files upload successfully on drive")
-
-    def test(self):
-        a = self.date_time()
-        b = self.extract_record()
-        print(self.df.head())
-        print(self.name)
-
-
-a = record()
-a.html_to_csv()
-a.companies_list()
-a.upload_drive()
-
-
-
